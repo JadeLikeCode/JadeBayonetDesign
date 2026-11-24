@@ -13,7 +13,7 @@
 
   --margin: 20px;
   --gap: 20px;    /* also the grid gutter */
-  --cols: 12;     /* layout grid — same as the "press G" overlay */
+  --cols: 12;     /* layout grid */
 
   --font: "Host Grotesk", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
 
@@ -197,7 +197,7 @@ a.tile:hover { text-decoration: none; }
   line-height: 18px;
   color: var(--muted);
 }
-/* Shared 12-column grid — matches the overlay (press G) */
+/* Shared 12-column layout grid */
 .grid,
 .project__details,
 .project--earlier .project__head,
@@ -349,23 +349,19 @@ a.tile:hover { text-decoration: none; }
   line-height: 18px;
 }
 
-/* ── Grid overlay (press G) ─────────────────────────────── */
-.grid-overlay {
+/* ── Hearts (press L) ───────────────────────────────────── */
+.footer__hint { cursor: pointer; }
+.footer__hint:hover { color: var(--ink); }
+.heart {
   position: fixed;
-  inset: 0;
-  pointer-events: none;
+  left: 0;
+  top: 0;
   z-index: 100;
-  padding: 0 var(--margin);
-  display: none;
+  pointer-events: none;
+  line-height: 1;
+  will-change: transform, opacity;
+  user-select: none;
 }
-.show-grid .grid-overlay { display: block; }
-.grid-overlay__inner {
-  height: 100%;
-  display: grid;
-  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-  gap: var(--gap);
-}
-.grid-overlay__inner span { background: rgba(255, 77, 28, 0.08); border-inline: 1px solid rgba(255, 77, 28, 0.25); }
 
 /* ── Tablet (≤ 1024px) ──────────────────────────────────── */
 @media (max-width: 1024px) {
@@ -407,7 +403,5 @@ a.tile:hover { text-decoration: none; }
   .drawer__inner { padding-bottom: 72px; }
   .info { grid-template-columns: 1fr 1fr; padding-top: 96px; }
   .footer { padding-top: 96px; }
-  .footer__hint { display: none; }
   .work--earlier { padding-top: 72px; }
-  .grid-overlay__inner span:nth-child(n + 5) { display: none; }
 }

@@ -60,5 +60,5 @@ Links like `jadebayonet.com/nothing-ice-cream` only work once the site is on its
 
 ## Extras
 
-- Press **G** to toggle the 12-column grid. Press **Esc** to close an open project.
+- Press **L** (or tap "Press L to spread some love" in the footer) for a burst of hearts. Press **Esc** to close an open project.
 - The ticker pauses on hover. Clicking a ticker tile with a `project` opens that project.

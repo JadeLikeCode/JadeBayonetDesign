@@ -4,7 +4,7 @@
    - Opening a project updates the URL to /slug/ (shareable link)
    - Visiting /slug/ directly loads the page with that drawer open
    - Ticker loops left and pauses on hover
-   - Press G to toggle the layout grid
+   - Press L (or tap the footer hint) to spread some love
    ───────────────────────────────────────────────────────────── */
 (function () {
   "use strict";
@@ -248,6 +248,66 @@
     else if (current) close({ push: false });
   }
 
+  /* ── Hearts (press L) ─────────────────────────────────── */
+  const HEARTS = ["❤️", "💖", "💗", "💕", "💘", "🩷", "❤️", "❤️"];
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const pointer = { x: null, y: null };
+  window.addEventListener("pointermove", (e) => { pointer.x = e.clientX; pointer.y = e.clientY; }, { passive: true });
+
+  function hearts(x, y) {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (x == null) { x = w / 2; y = h / 2; }
+    const count = reduceMotion.matches ? 12 : w < 640 ? 28 : 44;
+    const parts = [];
+
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement("span");
+      el.className = "heart";
+      el.setAttribute("aria-hidden", "true");
+      el.textContent = HEARTS[(Math.random() * HEARTS.length) | 0];
+      const size = 18 + Math.random() * 30;
+      el.style.fontSize = `${size}px`;
+      document.body.appendChild(el);
+
+      const angle = Math.random() * Math.PI * 2;
+      const speed = reduceMotion.matches ? 0 : 6 + Math.random() * 12;
+      parts.push({
+        el,
+        x: x - size / 2,
+        y: y - size / 2,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 6, // a little upward kick
+        rot: (Math.random() - 0.5) * 40,
+        vr: (Math.random() - 0.5) * 14,
+        life: 0,
+        max: 70 + Math.random() * 40,
+      });
+    }
+
+    let last = performance.now();
+    (function tick(now) {
+      const dt = Math.min((now - last) / 16.67, 3); // frame-rate independent
+      last = now;
+      let alive = 0;
+      for (const p of parts) {
+        if (!p.el) continue;
+        p.life += dt;
+        p.vy += 0.35 * dt;          // gravity
+        p.vx *= Math.pow(0.985, dt); // air
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.rot += p.vr * dt;
+        const t = p.life / p.max;
+        const scale = t < 0.15 ? t / 0.15 : 1;
+        p.el.style.opacity = String(t > 0.7 ? Math.max(0, 1 - (t - 0.7) / 0.3) : 1);
+        p.el.style.transform = `translate(${p.x}px, ${p.y}px) rotate(${p.rot}deg) scale(${scale})`;
+        if (t >= 1 || p.y > h + 80) { p.el.remove(); p.el = null; } else alive++;
+      }
+      if (alive) requestAnimationFrame(tick);
+    })(last);
+  }
+
   /* ── Events ───────────────────────────────────────────── */
   document.addEventListener("click", (e) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // let new-tab clicks through
@@ -278,6 +338,12 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
+    const love = e.target.closest("[data-love]");
+    if (love) {
+      const r = love.getBoundingClientRect();
+      hearts(r.left + r.width / 2, r.top);
+      return;
+    }
     if (e.target.closest("[data-top]")) {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -289,7 +355,7 @@
 
   document.addEventListener("keydown", (e) => {
     if (e.target.closest("input, textarea, [contenteditable]") || e.metaKey || e.ctrlKey || e.altKey) return;
-    if (e.key === "g" || e.key === "G") document.body.classList.toggle("show-grid");
+    if (e.key === "l" || e.key === "L") hearts(pointer.x, pointer.y);
     if (e.key === "Escape" && current) close();
   });
 
@@ -306,8 +372,6 @@
   });
 
   /* ── Init ─────────────────────────────────────────────── */
-  const grid = document.querySelector(".grid-overlay__inner");
-  if (grid) grid.innerHTML = "<span></span>".repeat(12);
   const y = document.getElementById("year");
   if (y) y.textContent = new Date().getFullYear();
 
