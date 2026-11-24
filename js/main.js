@@ -23,7 +23,10 @@
   const ROOT = new URL("..", document.currentScript.src);
   const LOCAL = location.protocol === "file:"; // opened by double-clicking → use #links
   const HOME = LOCAL ? new URL("index.html", ROOT).href : ROOT.pathname;
-  const asset = (src) => new URL(src, ROOT).href;
+  // When previewing from your computer, add a fresh "?v=" to every image/video so
+  // Safari never shows an old cached copy after you replace a file.
+  const BUST = LOCAL ? `?v=${Date.now()}` : "";
+  const asset = (src) => new URL(src, ROOT).href + BUST;
   const urlFor = (slug) => (LOCAL ? `${HOME}#${slug}` : `${ROOT.pathname}${slug}/`);
   const bySlug = (slug) => PROJECTS.find((p) => p.slug === slug);
 
