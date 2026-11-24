@@ -101,7 +101,24 @@ window.PROJECTS = [
         poster: "tough-talks/assets/TT_Hero_poster.jpg",
         alt: "Tough Talks logo animation: “All views welcome.” resolving into the Tough Talks mark",
       },
-      { type: "pair", ratio: "1/1", items: [{ src: "", label: "Square" }, { src: "", label: "Square" }] },
+      {
+        type: "pair",
+        ratio: "1/1",
+        items: [
+          {
+            type: "video",
+            src: "tough-talks/tough_talks_icon_square.mp4",
+            poster: "tough-talks/assets/tough_talks_icon_square_poster.jpg",
+            alt: "Tough Talks icon animation on red",
+          },
+          {
+            type: "video",
+            src: "tough-talks/tough_talks_stacked_square.mp4",
+            poster: "tough-talks/assets/tough_talks_stacked_square_poster.jpg",
+            alt: "Tough Talks stacked wordmark animation on blue",
+          },
+        ],
+      },
       {
         type: "full",
         src: "tough-talks/assets/1_Posters.png",
