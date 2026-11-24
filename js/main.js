@@ -31,24 +31,41 @@
   const marks = () =>
     ["tl", "tr", "bl", "br"].map((c) => `<span class="slide__mark slide__mark--${c}" aria-hidden="true">+</span>`).join("");
 
+  const isVideo = (item) => item.type === "video" || item.video === true || /\.(mp4|webm|mov|m4v)$/i.test(item.src || "");
+
+  // Video shapes: "wide" = 1920×1080 (16:9), "square" = 1:1
+  const VIDEO_RATIO = { wide: "16 / 9", square: "1 / 1" };
+
   function slide(item, ratio, color) {
-    const style = `--ratio:${ratio || item.ratio || "1400 / 820"};--slide-color:${color}`;
-    if (item.src && /\.(mp4|webm|mov)$/i.test(item.src)) {
-      return `<div class="slide" style="${style}"><video src="${esc(asset(item.src))}" autoplay muted loop playsinline preload="metadata"></video></div>`;
+    const video = isVideo(item);
+    const r = ratio || item.ratio || (video ? VIDEO_RATIO[item.shape || "wide"] : "1400 / 820");
+    const style = `--ratio:${r};--slide-color:${color}`;
+
+    if (video && item.src) {
+      // Loads + plays only when on screen (see setupVideos)
+      const poster = item.poster ? ` poster="${esc(asset(item.poster))}"` : "";
+      return `<div class="slide slide--video" style="${style}"><video data-src="${esc(asset(item.src))}"${poster} muted loop playsinline preload="none" aria-label="${esc(item.alt || "")}"></video></div>`;
     }
     if (item.src) {
       return `<figure class="slide" style="${style};margin:0"><img src="${esc(asset(item.src))}" alt="${esc(item.alt)}" loading="lazy" decoding="async" /></figure>`;
     }
-    return `<div class="slide" style="${style}">${marks()}<span class="slide__label">${esc(item.label || "")}</span></div>`;
+    const label = item.label || (video ? (item.shape === "square" ? "Square video" : "Video — 1920 × 1080") : "");
+    return `<div class="slide${video ? " slide--video" : ""}" style="${style}">${marks()}<span class="slide__label">${video ? "▶&nbsp; " : ""}${esc(label)}</span></div>`;
   }
 
   function block(b, p) {
     switch (b.type) {
       case "full":
-      case "video":
         return slide(b, b.ratio, p.color);
+      case "video":
+        // square on its own sits centred at half width; wide is full width
+        return b.shape === "square"
+          ? `<div class="solo-square">${slide(b, null, p.color)}</div>`
+          : slide(b, null, p.color);
       case "pair":
-        return `<div class="pair">${(b.items || []).map((i) => slide(i, i.ratio || b.ratio || "1 / 1", p.color)).join("")}</div>`;
+        return `<div class="pair">${(b.items || [])
+          .map((i) => slide(i, i.ratio || b.ratio || (isVideo(i) ? VIDEO_RATIO[i.shape || "square"] : "1 / 1"), p.color))
+          .join("")}</div>`;
       case "note":
         return `<div class="note"><p class="note__label">${esc(b.label || "")}</p><p class="note__text">${esc(b.text || "")}</p></div>`;
       default:
@@ -57,27 +74,32 @@
   }
 
   /* ── Drawer ───────────────────────────────────────────── */
-  function drawer(p, next) {
-    const meta = [
-      ["Role", p.role],
-      ["Year", p.year],
-      ["Scope", p.scope],
-      ["About", p.about],
-    ]
-      .filter(([, v]) => v)
-      .map(
-        ([k, v]) =>
-          `<div class="meta__item${k === "About" ? " meta__item--about" : ""}"><p class="meta__label">${k}</p><p>${esc(v)}</p></div>`
-      )
+  function credits(p) {
+    const people = (p.contributors || [])
+      .map((c) => (typeof c === "string" ? c : [c.name, c.role].filter(Boolean).join(" — ")))
+      .map((c) => `<li>${esc(c)}</li>`)
       .join("");
+    if (!p.role && !people) return "";
+    return `
+      <div class="credits">
+        <p class="credits__label">Credits</p>
+        ${p.role ? `<div class="credits__role"><p class="credits__k">My role</p><p>${esc(p.role)}</p></div>` : ""}
+        ${people ? `<div class="credits__people"><p class="credits__k">Contributors</p><ul>${people}</ul></div>` : ""}
+      </div>`;
+  }
+
+  function drawer(p, next) {
+    const intro = p.overview || p.year
+      ? `<div class="overview"><p class="overview__label">${esc(p.year || "")}</p><p class="overview__text">${esc(p.overview || "")}</p></div>`
+      : "";
 
     return `
       <div class="drawer" id="drawer-${p.slug}" role="region" aria-label="${esc(p.title)}">
         <div class="drawer__clip">
           <div class="drawer__inner">
-            ${meta ? `<div class="meta">${meta}</div>` : ""}
-            ${p.overview ? `<div class="overview"><p class="overview__label">Overview</p><p class="overview__text">${esc(p.overview)}</p></div>` : ""}
+            ${intro}
             ${(p.blocks || []).map((b) => block(b, p)).join("")}
+            ${credits(p)}
             <div class="drawer__footer">
               <a class="btn" href="${HOME}" data-close>Close project <span aria-hidden="true">↑</span></a>
               ${next ? `<a href="${urlFor(next.slug)}" data-open="${next.slug}">Next: ${esc(next.title)} ↓</a>` : ""}
@@ -104,7 +126,6 @@
             <span class="project__num">${pad(n)}</span>
           </div>
           <div class="project__details">
-            <p class="project__blurb">${esc(p.blurb || "")}</p>
             <div class="tags">${tags}</div>
             ${toggleButton(p)}
           </div>
@@ -310,6 +331,7 @@
 
   /* ── Events ───────────────────────────────────────────── */
   document.addEventListener("click", (e) => {
+    if (e.detail > 0) e.target.closest("a, button")?.blur(); // mouse click → no lingering focus ring
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // let new-tab clicks through
 
     const toggle = e.target.closest("[data-toggle]");
@@ -371,12 +393,36 @@
     }, 200);
   });
 
+  /* ── Videos: load + play only while on screen ─────────── */
+  function setupVideos() {
+    const videos = document.querySelectorAll("video[data-src]");
+    if (!("IntersectionObserver" in window)) {
+      videos.forEach((v) => { v.src = v.dataset.src; v.autoplay = true; });
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const { target: v, isIntersecting } of entries) {
+          if (isIntersecting) {
+            if (!v.src) { v.src = v.dataset.src; v.load(); }
+            if (!reduceMotion.matches) v.play().catch(() => {});
+          } else if (v.src) {
+            v.pause();
+          }
+        }
+      },
+      { rootMargin: "200px 0px" }
+    );
+    videos.forEach((v) => io.observe(v));
+  }
+
   /* ── Init ─────────────────────────────────────────────── */
   const y = document.getElementById("year");
   if (y) y.textContent = new Date().getFullYear();
 
   renderWork();
   renderTicker();
+  setupVideos();
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   route({ smooth: false });
 })();

@@ -5,28 +5,40 @@
 
   Each project gets its own URL from its `slug`:
     slug: "nothing-ice-cream"  →  jadebayonet.com/nothing-ice-cream
+  After adding a project or changing a slug/title, run:  node build.js
 
-  After adding a project or changing a slug/title, run:
-    node build.js
-  (it creates the /slug/ folders that make those links work.)
+  What shows where:
+    Closed row   →  title, tags, "See the project"
+    Drawer top   →  year (left) + overview (right)
+    Drawer body  →  your `blocks`, top to bottom
+    Drawer end   →  credits: `role` + `contributors`
 
-  `blocks` is the project's layout, top to bottom. Block types:
+  ── Blocks ──────────────────────────────────────────────────
 
-    { type: "full",  src: "images/x.jpg", alt: "...", ratio: "1400/820" }
-        → one full-width image. `ratio` is width/height (optional).
+  IMAGES
+    { type: "full", src: "images/x.jpg", alt: "…", ratio: "1400/820" }
+        one full-width image. `ratio` = width/height (optional).
 
-    { type: "pair",  ratio: "690/880", items: [ {src, alt}, {src, alt} ] }
-        → two images side by side, 50/50. "690/880" = portrait,
-          "1/1" = square, "4/3" = landscape.
+    { type: "pair", ratio: "1/1", items: [ {src, alt}, {src, alt} ] }
+        two side by side, 50/50. "1/1" square, "690/880" portrait.
 
-    { type: "note",  label: "Social", text: "This was a social execution…" }
-        → a text break between images.
+  VIDEO  (muted, looping, plays when scrolled into view)
+    { type: "video", shape: "wide",   src: "images/x.mp4", poster: "images/x.jpg" }
+        full width, 1920 × 1080.
 
-    { type: "video", src: "images/x.mp4", ratio: "16/9" }
-        → a full-width looping, muted video.
+    { type: "video", shape: "square", src: "images/x.mp4" }
+        square, centred at half width.
 
-  Leave `src` empty ("") to show a placeholder box with crop marks.
-  `label` on an image only shows on placeholders.
+    Two square videos side by side — use a pair:
+    { type: "pair", items: [ { type: "video", src: "a.mp4" }, { type: "video", src: "b.mp4" } ] }
+    (images and videos can be mixed in a pair)
+
+  TEXT BREAK
+    { type: "note", label: "Social", text: "This was a social execution…" }
+
+  Leave `src: ""` to show a placeholder box.
+  `poster` (optional) is the still shown before a video loads.
+  Export videos as H.264 .mp4, ideally under ~10 MB each.
 */
 
 window.PROJECTS = [
@@ -34,14 +46,15 @@ window.PROJECTS = [
     slug: "nothing-ice-cream",
     title: "Nothing Ice Cream",
     group: "selected",
-    blurb: "[One line: what it is and what you made.]",
     tags: ["[Category]", "[Category]", "[Category]"],
     role: "[Your role]",
     year: "[Year]",
-    scope: "[Identity, packaging, …]",
-    about: "[Two or three lines on the project, in your words. Optional.]",
     overview:
       "[Project overview. The brief, the problem and the idea — a short paragraph that sets up everything below it.]",
+    contributors: [
+      { name: "[Name]", role: "[Role]" },
+      { name: "[Name]", role: "[Role]" },
+    ],
     color: "#f2dbd6",
     blocks: [
       { type: "full", src: "", alt: "", label: "Nothing Ice Cream — hero image, full width", ratio: "1400/820" },
@@ -54,7 +67,8 @@ window.PROJECTS = [
         ],
       },
       { type: "note", label: "Social", text: "[This was a social execution — a line or two on what it was and how it ran.]" },
-      { type: "full", src: "", alt: "", label: "Full width", ratio: "1400/720" },
+      { type: "video", shape: "wide", src: "" },
+      { type: "video", shape: "square", src: "" },
       {
         type: "pair",
         ratio: "1/1",
@@ -69,12 +83,9 @@ window.PROJECTS = [
     slug: "tough-talks",
     title: "Tough Talks",
     group: "selected",
-    blurb: "[One line: what it is and what you made.]",
     tags: ["[Category]", "[Category]", "[Category]"],
     role: "[Your role]",
     year: "[Year]",
-    scope: "[Scope]",
-    about: "",
     overview: "[Project overview.]",
     color: "#deddee",
     blocks: [
@@ -86,12 +97,9 @@ window.PROJECTS = [
     slug: "climb-financial",
     title: "Climb Financial",
     group: "selected",
-    blurb: "[One line: what it is and what you made.]",
     tags: ["[Category]", "[Category]", "[Category]"],
     role: "[Your role]",
     year: "[Year]",
-    scope: "[Scope]",
-    about: "",
     overview: "[Project overview.]",
     color: "#d6e8de",
     blocks: [
@@ -103,12 +111,9 @@ window.PROJECTS = [
     slug: "godaddy",
     title: "GoDaddy",
     group: "selected",
-    blurb: "[One line on the global rebrand and your part in it.]",
     tags: ["Rebrand", "Art direction", "[Category]"],
     role: "[Your role]",
     year: "[Year]",
-    scope: "[Scope]",
-    about: "",
     overview: "[Project overview.]",
     color: "#e8e7dc",
     blocks: [
@@ -124,7 +129,6 @@ window.PROJECTS = [
     group: "earlier",
     year: "[Year]",
     role: "[Your role]",
-    scope: "[Scope]",
     overview: "[Project overview.]",
     color: "#f0edd6",
     blocks: [{ type: "full", src: "", label: "Sour Bright Sneaks", ratio: "1400/820" }],
@@ -135,7 +139,6 @@ window.PROJECTS = [
     group: "earlier",
     year: "[Year]",
     role: "[Your role]",
-    scope: "[Scope]",
     overview: "[Project overview.]",
     color: "#e1e5ea",
     blocks: [{ type: "full", src: "", label: "Trolley", ratio: "1400/820" }],
@@ -146,7 +149,6 @@ window.PROJECTS = [
     group: "earlier",
     year: "[Year]",
     role: "[Your role]",
-    scope: "[Scope]",
     overview: "[Project overview.]",
     color: "#e9e1eb",
     blocks: [{ type: "full", src: "", label: "Mokuyobi", ratio: "1400/820" }],
@@ -157,7 +159,6 @@ window.PROJECTS = [
     group: "earlier",
     year: "[Year]",
     role: "[Your role]",
-    scope: "[Scope]",
     overview: "[Project overview.]",
     color: "#e8e7dc",
     blocks: [{ type: "full", src: "", label: "Weirdly Woven", ratio: "1400/820" }],
