@@ -22,18 +22,19 @@ Open `js/projects.js`. Each project has a `slug`, which becomes its URL:
 slug: "nothing-ice-cream"   →   jadebayonet.com/nothing-ice-cream
 ```
 
-The drawer shows, in order: Role / Year / Scope / About → **Overview** → your `blocks`.
+Closed row: title + tags. Drawer: **year + overview** → your `blocks` → **credits** (`role` + `contributors`).
 
 Block types:
 
 ```js
 { type: "full", src: "images/nothing-ice-cream/hero.jpg", alt: "…", ratio: "1400/820" }
-{ type: "pair", ratio: "1/1", items: [ { src: "…", alt: "…" }, { src: "…", alt: "…" } ] }   // 50/50
-{ type: "note", label: "Social", text: "This was a social execution…" }                      // text break
-{ type: "video", src: "images/nothing-ice-cream/spot.mp4", ratio: "16/9" }
+{ type: "pair", ratio: "1/1", items: [ { src: "…" }, { src: "…" } ] }          // 50/50 images
+{ type: "video", src: "images/nothing-ice-cream/spot.mp4" }                  // full width, 1920×1080
+{ type: "pair", ratio: "1/1", items: [ { type: "video", src: "loop.mp4" }, { src: "still.jpg" } ] } // square video + image
+{ type: "note", label: "Social", text: "This was a social execution…" }      // text break
 ```
 
-`ratio` is width/height: `"1/1"` square, `"690/880"` portrait, `"16/9"` wide. Leave `src: ""` for a placeholder.
+Videos are muted, loop, and only load/play when scrolled into view. Export as H.264 `.mp4`, ideally under ~10 MB. Add `poster: "…jpg"` for a still frame before it loads.
 
 **After adding a project or changing a slug, title or blurb, run:**
 

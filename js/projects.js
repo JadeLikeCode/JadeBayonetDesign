@@ -23,15 +23,14 @@
         two side by side, 50/50. "1/1" square, "690/880" portrait.
 
   VIDEO  (muted, looping, plays when scrolled into view)
-    { type: "video", shape: "wide",   src: "images/x.mp4", poster: "images/x.jpg" }
+    { type: "video", src: "images/x.mp4", poster: "images/x.jpg" }
         full width, 1920 × 1080.
 
-    { type: "video", shape: "square", src: "images/x.mp4" }
-        square, centred at half width.
-
-    Two square videos side by side — use a pair:
-    { type: "pair", items: [ { type: "video", src: "a.mp4" }, { type: "video", src: "b.mp4" } ] }
-    (images and videos can be mixed in a pair)
+    Square videos always go in a pair, next to an image or another square video:
+    { type: "pair", ratio: "1/1", items: [
+        { type: "video", src: "images/x.mp4" },
+        { src: "images/y.jpg", alt: "…" },
+    ] }
 
   TEXT BREAK
     { type: "note", label: "Social", text: "This was a social execution…" }
@@ -67,8 +66,15 @@ window.PROJECTS = [
         ],
       },
       { type: "note", label: "Social", text: "[This was a social execution — a line or two on what it was and how it ran.]" },
-      { type: "video", shape: "wide", src: "" },
-      { type: "video", shape: "square", src: "" },
+      { type: "video", src: "" },
+      {
+        type: "pair",
+        ratio: "1/1",
+        items: [
+          { type: "video", src: "", label: "Square video" },
+          { src: "", alt: "", label: "Square image" },
+        ],
+      },
       {
         type: "pair",
         ratio: "1/1",

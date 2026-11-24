@@ -58,10 +58,8 @@
       case "full":
         return slide(b, b.ratio, p.color);
       case "video":
-        // square on its own sits centred at half width; wide is full width
-        return b.shape === "square"
-          ? `<div class="solo-square">${slide(b, null, p.color)}</div>`
-          : slide(b, null, p.color);
+        // On its own a video is always full width, 1920×1080. Square videos go in a pair.
+        return slide({ ...b, shape: "wide" }, null, p.color);
       case "pair":
         return `<div class="pair">${(b.items || [])
           .map((i) => slide(i, i.ratio || b.ratio || (isVideo(i) ? VIDEO_RATIO[i.shape || "square"] : "1 / 1"), p.color))
