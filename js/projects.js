@@ -97,6 +97,12 @@ window.PROJECTS = [
     blocks: [
       { type: "full", src: "", alt: "", label: "Tough Talks — hero image", ratio: "1400/820" },
       { type: "pair", ratio: "1/1", items: [{ src: "", label: "Square" }, { src: "", label: "Square" }] },
+      {
+        type: "full",
+        src: "tough-talks/assets/1_Posters.png",
+        alt: "Tough Talks poster series: ten posters on guns, foreign policy, gender, war and abortion, each reading “All views welcome”",
+        ratio: "1920/1100",
+      },
     ],
   },
   {
