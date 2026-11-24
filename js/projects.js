@@ -95,7 +95,12 @@ window.PROJECTS = [
     overview: "[Project overview.]",
     color: "#deddee",
     blocks: [
-      { type: "full", src: "", alt: "", label: "Tough Talks — hero image", ratio: "1400/820" },
+      {
+        type: "video",
+        src: "tough-talks/TT_Hero_Logo_video.mp4",
+        poster: "tough-talks/assets/TT_Hero_poster.jpg",
+        alt: "Tough Talks logo animation: “All views welcome.” resolving into the Tough Talks mark",
+      },
       { type: "pair", ratio: "1/1", items: [{ src: "", label: "Square" }, { src: "", label: "Square" }] },
       {
         type: "full",
