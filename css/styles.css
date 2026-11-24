@@ -12,7 +12,8 @@
   --accent: #ff4d1c;
 
   --margin: 20px;
-  --gap: 20px;
+  --gap: 20px;    /* also the grid gutter */
+  --cols: 12;     /* layout grid — same as the "press G" overlay */
 
   --font: "Host Grotesk", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
 
@@ -161,7 +162,7 @@ a.tile:hover { text-decoration: none; }
 .btn--active { background: var(--ink); color: #fff; }
 .btn--active:hover { background: #fff; color: var(--ink); }
 
-.tags { display: flex; flex-wrap: wrap; gap: 8px; flex: 1 1 0; min-width: 0; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
 .tag {
   padding: 5px 12px;
   border: 1px solid var(--muted);
@@ -196,20 +197,32 @@ a.tile:hover { text-decoration: none; }
   line-height: 18px;
   color: var(--muted);
 }
-.project__details { display: flex; gap: 40px; align-items: center; }
-.project__blurb {
-  width: 520px;
-  flex: none;
-  color: var(--muted);
+/* Shared 12-column grid — matches the overlay (press G) */
+.grid,
+.project__details,
+.project--earlier .project__head,
+.meta,
+.overview,
+.note {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gap);
 }
+
+.project__details { row-gap: 14px; align-items: center; }
+.project__blurb { grid-column: 1 / span 5; color: var(--muted); }
+.project__details .tags { grid-column: 6 / span 5; }
+.project__details .btn { grid-column: 11 / -1; justify-self: end; }
 
 /* ── Earlier work rows ──────────────────────────────────── */
 .project--earlier .project__head {
-  flex-direction: row;
   align-items: center;
-  gap: 24px;
+  row-gap: 10px;
   padding: 10px 0 12px;
 }
+.project--earlier .project__title { grid-column: 1 / span 9; }
+.project--earlier .project__num { grid-column: 10 / span 1; }
+.project--earlier .project__head .btn { grid-column: 11 / -1; justify-self: end; }
 .project--earlier .project__title {
   font-size: var(--t-earlier);
   line-height: 0.92;
@@ -239,25 +252,22 @@ a.tile:hover { text-decoration: none; }
 
 /* Role / Year / Scope / About */
 .meta {
-  display: grid;
-  grid-template-columns: 220px 220px 220px 1fr;
-  gap: var(--gap);
+  row-gap: 20px;
   padding-bottom: 20px;
   color: var(--muted);
 }
-.meta__item { display: flex; flex-direction: column; gap: 4px; }
+.meta__item { display: flex; flex-direction: column; gap: 4px; grid-column: span 2; }
+.meta__item--about { grid-column: 7 / -1; }
 .meta__label { font-size: var(--t-small); line-height: 18px; }
 
 /* Project overview (new — not in Figma yet) */
 .overview {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: var(--gap);
+  row-gap: 8px;
   padding: 20px 0 60px;
 }
-.overview__label { font-size: var(--t-small); line-height: 18px; color: var(--muted); }
+.overview__label { grid-column: 1 / span 2; font-size: var(--t-small); line-height: 18px; color: var(--muted); }
 .overview__text {
-  max-width: 920px;
+  grid-column: 3 / span 7;
   font-size: var(--t-overview);
   line-height: 1.2;
   font-weight: 500;
@@ -266,13 +276,11 @@ a.tile:hover { text-decoration: none; }
 
 /* Note — a text break between images */
 .note {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: var(--gap);
+  row-gap: 8px;
   padding: 60px 0;
 }
-.note__label { font-size: var(--t-small); line-height: 18px; color: var(--muted); }
-.note__text { max-width: 640px; font-size: 20px; line-height: 28px; }
+.note__label { grid-column: 1 / span 2; font-size: var(--t-small); line-height: 18px; color: var(--muted); }
+.note__text { grid-column: 3 / span 5; font-size: 20px; line-height: 28px; }
 
 /* Media */
 .slide {
@@ -354,7 +362,7 @@ a.tile:hover { text-decoration: none; }
 .grid-overlay__inner {
   height: 100%;
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
   gap: var(--gap);
 }
 .grid-overlay__inner span { background: rgba(255, 77, 28, 0.08); border-inline: 1px solid rgba(255, 77, 28, 0.25); }
@@ -363,29 +371,35 @@ a.tile:hover { text-decoration: none; }
 @media (max-width: 1024px) {
   .intro { padding-top: 96px; }
   .ticker { height: 340px; margin-bottom: 100px; }
-  .project__details { flex-wrap: wrap; gap: 14px 24px; }
-  .project__blurb { width: 100%; }
-  .meta { grid-template-columns: 1fr 1fr 1fr; }
+  .project__blurb { grid-column: 1 / -1; }
+  .project__details .tags { grid-column: 1 / span 8; }
+  .project__details .btn { grid-column: 9 / -1; }
+  .project--earlier .project__title { grid-column: 1 / span 8; }
+  .project--earlier .project__num { grid-column: 9 / span 2; }
+  .meta__item { grid-column: span 4; }
   .meta__item--about { grid-column: 1 / -1; }
-  .overview, .note { grid-template-columns: 1fr; gap: 8px; }
+  .overview__text { grid-column: 3 / -1; }
+  .note__text { grid-column: 3 / span 8; }
   .info { grid-template-columns: 1fr 1fr; row-gap: 48px; padding-top: 120px; }
   .footer { padding-top: 120px; }
 }
 
 /* ── Mobile (≤ 640px) ───────────────────────────────────── */
 @media (max-width: 640px) {
-  :root { --margin: 16px; --gap: 12px; }
+  :root { --margin: 16px; --gap: 12px; --cols: 4; }
   .nav { grid-template-columns: 1fr auto; row-gap: 6px; }
   .nav__status { grid-row: 2; grid-column: 1 / -1; }
   .intro { padding: 72px 0 40px; }
   .ticker { height: 260px; margin-bottom: 72px; }
   .ticker__track { --tgap: 16px; }
-  .project__details { gap: 12px; }
-  .tags { flex-basis: 100%; }
-  .project--earlier .project__head { flex-wrap: wrap; row-gap: 10px; }
-  .project--earlier .project__title { flex-basis: 100%; }
-  .project--earlier .project__num { flex: 1; }
-  .meta { grid-template-columns: 1fr 1fr; }
+  .project__details { row-gap: 12px; }
+  .project__details .tags { grid-column: 1 / -1; }
+  .project__details .btn { grid-column: 1 / -1; justify-self: start; }
+  .project--earlier .project__title { grid-column: 1 / -1; }
+  .project--earlier .project__num { grid-column: 1 / span 2; }
+  .project--earlier .project__head .btn { grid-column: 3 / -1; }
+  .meta__item { grid-column: span 2; }
+  .overview__label, .note__label, .overview__text, .note__text { grid-column: 1 / -1; }
   .overview { padding: 12px 0 32px; }
   .note { padding: 32px 0; }
   .note__text { font-size: 17px; line-height: 24px; }
@@ -395,5 +409,5 @@ a.tile:hover { text-decoration: none; }
   .footer { padding-top: 96px; }
   .footer__hint { display: none; }
   .work--earlier { padding-top: 72px; }
-  .grid-overlay__inner { grid-template-columns: repeat(4, 1fr); }
+  .grid-overlay__inner span:nth-child(n + 5) { display: none; }
 }
