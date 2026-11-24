@@ -126,6 +126,20 @@ window.PROJECTS = [
         alt: "Tough Talks poster series: ten posters on guns, foreign policy, gender, war and abortion, each reading “All views welcome”",
         ratio: "1920/1100",
       },
+      {
+        type: "full",
+        src: "tough-talks/TT_Posters_All.jpg",
+        alt: "Tough Talks posters wheat-pasted along a city construction wall, with a pedestrian walking past",
+        ratio: "1920/1081",
+      },
+      {
+        type: "pair",
+        ratio: "1/1",
+        items: [
+          { src: "tough-talks/TT_Billboard.jpg", alt: "Tough Talks “Abortion” poster in a bus shelter on a college campus" },
+          { src: "tough-talks/TT_Bus_Ad.jpg", alt: "Tough Talks bus-side ad: “Disagree, agreeably.” Thursdays, 7 PM, free, Hall B" },
+        ],
+      },
     ],
   },
   {
