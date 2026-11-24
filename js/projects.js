@@ -89,10 +89,11 @@ window.PROJECTS = [
     slug: "tough-talks",
     title: "Tough Talks",
     group: "selected",
-    tags: ["[Category]", "[Category]", "[Category]"],
+    tags: ["Branding", "Animation", "Campaign"],
     role: "[Your role]",
     year: "[Year]",
-    overview: "[Project overview.]",
+    overview:
+      "Tough Talks is a new platform taking debate to the next level. Politics can be polarizing, so Tough Talks brings both sides to the same table to promote civil discourse. The identity is built on that idea: a mark split down the middle, red and blue, two halves that only work together.",
     color: "#deddee",
     blocks: [
       {
