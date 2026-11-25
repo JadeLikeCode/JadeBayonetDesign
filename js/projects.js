@@ -220,6 +220,7 @@ window.PROJECTS = [
   `project` (optional) makes the image open that project when clicked.
 */
 window.TICKER = [
+  { src: "Hero Ticker/Grainline_ticker.png", alt: "Grainline: a walnut chair with a linen throw in a sunlit room", w: 400, h: 300, color: "#efe9e2" },
   { src: "", label: "Work crop — Nothing Ice Cream", w: 420, h: 300, color: "#f2dcd6", project: "nothing-ice-cream" },
   { src: "assets/pin-great-job.png", alt: "“You’re doing a great job” pin", w: 240, h: 188, color: "transparent", project: "tough-talks", inset: { w: 148, x: 46, y: 8 } },
   { src: "", label: "B&W self-portrait — abstract", w: 200, h: 420, color: "#2a2a2a", dark: true },
